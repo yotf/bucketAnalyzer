@@ -1,8 +1,5 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
-import MultiListBox from "./components/MultiListBox";
+import FileProcessor from "./components/FileProcessor";
 
 const files = [
   "gugd1igugdi",
@@ -12,12 +9,22 @@ const files = [
   "fjkslfjds",
   "fdsjkfdlsjdfklds",
   "fjdskfdjslfdddd",
+  "fdjsklfjslkjdslkfjdslkfjdlksfjdslkjfdlksjfdlsk"
 ];
 function App() {
   return (
-    <>
-      <MultiListBox options={files} label={"Files"} />
-    </>
+    <div className="m-0 flex items-center justify-center min-w-[320px] min-h-screen">
+      <FileProcessor buckets={
+        ['bucket1','bucket2','bucketfdfdfdfdfdfdfd3']
+      } filesByBucket={{
+        bucket1: files,
+        bucket2: files,
+        bucketfdfdfdfdfdfdfd3: files,
+      }} onProcessFiles={(bucket,files)=>{
+        console.log(bucket,files)
+      } }/>
+     
+    </div>
   );
 }
 
