@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import MultiListBox from './atoms/MultiListBox';
 import SingleListBox from './atoms/SingleListBox';
 import Button from './atoms/Button';
@@ -9,12 +9,14 @@ type FileProcessorProps = {
   buckets: string[];
   filesByBucket: Record<string, string[]>;
   onProcessFiles: (bucket: string, files: string[]) => void;
+  
 };
 
 const FileProcessor: React.FC<FileProcessorProps> = ({
   buckets,
   filesByBucket,
   onProcessFiles,
+  
 }) => {
   const [selectedBucket, setSelectedBucket] = useState<string>(buckets[0]);
   const [selectedFiles, setSelectedFiles] = useState<string[]>([]);
@@ -25,8 +27,12 @@ const FileProcessor: React.FC<FileProcessorProps> = ({
     }
   };
 
+
   return (
-    <div className="p-4 flex justify-end items-center gap-10">
+    <div className=" flex flex-col items-start  ">
+      <h2 className='text-red-500 uppercase  -mb-[2px] ml-[6px] '>Process Files</h2>
+      
+      <div className=' p-4  border rounded-xl border-red-500 flex justify-end items-center gap-10 '>
       <SingleListBox
         label="Bucket"
         options={buckets}
@@ -34,6 +40,7 @@ const FileProcessor: React.FC<FileProcessorProps> = ({
         onChange={(bucket) => {
           setSelectedBucket(bucket);
           setSelectedFiles([]); // Clear files when a new bucket is selected
+    
         }}
       />
      
@@ -52,7 +59,9 @@ const FileProcessor: React.FC<FileProcessorProps> = ({
       >
         Process Selected Files
       </Button>
+      </div>
     </div>
+
   );
 };
 

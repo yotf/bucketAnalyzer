@@ -49,7 +49,7 @@ const BaseListBox: React.FC<ListBoxProps> = ({
             </ListboxButton>
 
             <ListboxOptions
-              className=" w-40 max-h-60 rounded-md py-1 text-base leading-6 shadow-xl overflow-auto focus:outline-none sm:text-sm sm:leading-5 absolute text-left origin-top transition duration-200 ease-out data-[closed]:scale-95 data-[closed]:opacity-0"
+              className=" bg-zinc-800 z-50 w-40 max-h-60 rounded-md py-1 text-base leading-6 shadow-xl overflow-auto focus:outline-none sm:text-sm sm:leading-5 absolute text-left origin-top transition duration-200 ease-out data-[closed]:scale-95 data-[closed]:opacity-0"
               transition
             >
               {options.map((option) => (
