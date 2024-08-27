@@ -38,7 +38,7 @@ const BaseListBox: React.FC<ListBoxProps> = ({
                   ? selected || `Choose ${label?.toLowerCase()}`
                   : selected?.length == 0
                     ? "All"
-                    : `Choose ${label.toLowerCase()} (${selected.length})`}
+                    : `Choose ${label?.toLowerCase() ?? ""} (${selected.length})`}
               </span>
               <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
                 <svg

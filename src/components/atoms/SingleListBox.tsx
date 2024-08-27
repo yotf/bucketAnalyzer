@@ -1,15 +1,18 @@
-
 import BaseListBox from "./BaseListBox";
 
 export type SingleListBoxProps = {
-  label: string;
+  label?: string;
   options: string[];
   selected?: string;
   onChange: (value: string) => void;
 };
 
-const SingleListBox: React.FC<SingleListBoxProps> = ({ label, options,selected,onChange }) => {
-
+const SingleListBox: React.FC<SingleListBoxProps> = ({
+  label,
+  options,
+  selected,
+  onChange,
+}) => {
   return (
     <BaseListBox
       label={label}

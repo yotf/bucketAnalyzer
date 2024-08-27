@@ -74,7 +74,7 @@ const BucketAndFileCreator: React.FC<BucketAndFileCreatorProps> = () => {
 
   const [selectedBucket, setSelectedBucket] = useState<string>("");
 
-  const { data: buckets, isLoading: bucketsLoading } = useBuckets();
+  const { data: buckets } = useBuckets();
 
   const { mutate: createBucket, isPending: createBucketPending } =
     useCreateBucket();

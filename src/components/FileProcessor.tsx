@@ -13,9 +13,8 @@ const FileProcessor: React.FC<FileProcessorProps> = () => {
   const [selectedBucket, setSelectedBucket] = useState<string>("");
   const [isModalOpen, setModalOpen] = useState(false);
 
-  const { data: buckets, isLoading: bucketsLoading } = useBuckets();
-  const { data: filesByBucket, isLoading: filesLoading } =
-    useFiles(selectedBucket);
+  const { data: buckets } = useBuckets();
+  const { data: filesByBucket } = useFiles(selectedBucket);
 
   const { mutate: processFiles, isPending: isProcessFilePending } =
     useProcessFiles();

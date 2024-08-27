@@ -94,7 +94,7 @@ export const useProcessFiles = () => {
         toast.error(`Error: ${error.message}`);
       }
     },
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success(`All files processed successfully!`);
     },
   });
@@ -113,7 +113,6 @@ export const useCreateBucket = () => {
       queryClient.invalidateQueries({ queryKey: ["buckets"] });
     },
     onError: (error: AxiosError<{ error: string }>) => {
-      debugger;
       toast.error(`Error creating bucket: ${error?.response?.data?.error}`);
     },
   });
@@ -134,7 +133,7 @@ export const useCreateFile = () => {
       });
     },
 
-    onSuccess: (data, variables) => {
+    onSuccess: (_data, variables) => {
       toast.success("File created successfully!");
       queryClient.invalidateQueries({
         queryKey: ["files", variables.bucketName],
