@@ -40,6 +40,16 @@ type ProcessFileParams = {
   files: string[];
 };
 
+export type ProcessedFileInfo = {
+  bucketName: string;
+  fileName: string;
+  fileContentHash: string;
+  processingTimestamp: string;
+  classification: string;
+  fileSize: number;
+  fileType: string;
+};
+
 export const useProcessFiles = () => {
   return useMutation({
     mutationFn: async ({ bucket, files }: ProcessFileParams) => {
@@ -55,7 +65,7 @@ export const useProcessFiles = () => {
           ? "Malware"
           : "Goodware";
 
-        const processingInfo = {
+        const processingInfo: ProcessedFileInfo = {
           bucketName: bucket,
           fileName: file,
           fileContentHash: hash,
