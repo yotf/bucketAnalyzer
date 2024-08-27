@@ -37,52 +37,55 @@ export const fetchFile = async (bucketName: string, fileName: string) => {
 
 type ProcessFileParams = {
   bucket: string;
-  file: string;
+  files: string[];
 };
 
-export const useProcessFile = () => {
+export const useProcessFiles = () => {
   return useMutation({
-    mutationFn: async ({ bucket, file }: ProcessFileParams) => {
-      const response = await fetchFile(bucket, file);
+    mutationFn: async ({ bucket, files }: ProcessFileParams) => {
+      const processingResults = [];
+      for (const file of files) {
+        const response = await fetchFile(bucket, file);
 
-      const fileContent = response.content;
+        const fileContent = response.content;
 
-      // Calculate content hash (MD5 or SHA256)
-      const hash = CryptoJS.SHA256(fileContent).toString();
+        const hash = CryptoJS.SHA256(fileContent).toString();
 
-      // Classify the file content
-      const classification = fileContent.includes("virus")
-        ? "Malware"
-        : "Goodware";
+        const classification = fileContent.includes("virus")
+          ? "Malware"
+          : "Goodware";
 
-      // Prepare the processing information
-      const processingInfo = {
-        bucketName: bucket,
-        fileName: file,
-        fileContentHash: hash,
-        processingTimestamp: new Date().toISOString(),
-        classification: classification,
-        fileSize: fileContent.length,
-        fileType: "text/plain", // Assuming all files are text files
-      };
+        const processingInfo = {
+          bucketName: bucket,
+          fileName: file,
+          fileContentHash: hash,
+          processingTimestamp: new Date().toISOString(),
+          classification: classification,
+          fileSize: fileContent.length,
+          fileType: "text/plain",
+        };
+        processingResults.push(processingInfo);
 
-      // Store the processing information in local storage
-      localStorage.setItem(
-        `processedFile-${bucket}-${file}`,
-        JSON.stringify(processingInfo)
-      );
+        localStorage.setItem(
+          `processedFile-${bucket}-${file}`,
+          JSON.stringify(processingInfo)
+        );
+      }
 
-      return processingInfo;
+      return processingResults;
     },
 
     onError: (error: AxiosError<{ error: string }>) => {
       if (error.response) {
-        toast.error(`Error processing file: ${error.response.data.error}`);
+        toast.error(`Error processing files: ${error.response.data.error}`);
       } else if (error.request) {
         toast.error("Network error: Please check your connection.");
       } else {
         toast.error(`Error: ${error.message}`);
       }
+    },
+    onSuccess: (data) => {
+      toast.success(`All files processed successfully!`);
     },
   });
 };

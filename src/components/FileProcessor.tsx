@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useBuckets, useFiles, useProcessFile } from "../hooks/fileQueries";
+import { useBuckets, useFiles, useProcessFiles } from "../hooks/fileQueries";
 import Button from "./atoms/Button";
 import Modal from "./atoms/Modal";
 import MultiListBox from "./atoms/MultiListBox";
@@ -17,8 +17,8 @@ const FileProcessor: React.FC<FileProcessorProps> = () => {
   const { data: filesByBucket, isLoading: filesLoading } =
     useFiles(selectedBucket);
 
-  const { mutate: processFile, isPending: isProcessFilePending } =
-    useProcessFile();
+  const { mutate: processFiles, isPending: isProcessFilePending } =
+    useProcessFiles();
 
   useEffect(() => {
     if (buckets && buckets.length > 0) {
@@ -31,9 +31,7 @@ const FileProcessor: React.FC<FileProcessorProps> = () => {
       const filesToProcess =
         selectedFiles.length === 0 ? filesByBucket : selectedFiles; // process all files if none are selected
       console.log("Processing files:", filesToProcess);
-      filesToProcess.forEach(async (file: string) => {
-        processFile({ bucket: selectedBucket, file });
-      });
+      processFiles({ bucket: selectedBucket, files: filesToProcess });
     }
   };
 
@@ -43,27 +41,29 @@ const FileProcessor: React.FC<FileProcessorProps> = () => {
         Process Files
       </h2>
 
-      <div className=" p-4  border rounded-xl border-red-500 flex justify-end items-center gap-10 relative">
-        <SingleListBox
-          label="Bucket"
-          options={buckets}
-          selected={selectedBucket}
-          onChange={(bucket) => {
-            setSelectedBucket(bucket);
-            setSelectedFiles([]); // Clear files when a new bucket is selected
-          }}
-        />
+      <div className=" p-4  border rounded-xl border-red-500 flex flex-col justify-end items-center  relative">
+        <div className="flex gap-10">
+          <SingleListBox
+            label="Bucket"
+            options={buckets}
+            selected={selectedBucket}
+            onChange={(bucket) => {
+              setSelectedBucket(bucket);
+              setSelectedFiles([]); // Clear files when a new bucket is selected
+            }}
+          />
 
-        <MultiListBox
-          label="Files"
-          options={selectedBucket ? filesByBucket : []}
-          selected={selectedFiles}
-          onChange={setSelectedFiles}
-        />
+          <MultiListBox
+            label="Files"
+            options={selectedBucket ? filesByBucket : []}
+            selected={selectedFiles}
+            onChange={setSelectedFiles}
+          />
+        </div>
 
         <Button
           onClick={handleProcessFiles}
-          disabled={!selectedBucket}
+          disabled={!selectedBucket || isProcessFilePending}
           className="mt-[23px]"
         >
           Process Selected Files
