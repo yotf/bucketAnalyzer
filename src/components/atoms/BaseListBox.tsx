@@ -20,8 +20,8 @@ const BaseListBox: React.FC<ListBoxProps> = ({
   multiple,
 }) => {
   return (
-    <div className="flex items-center justify-center">
-      <div className="w-40 mx-auto space-y-1">
+    <div className="flex items-center justify-center w-full">
+      <div className="w-full mx-auto space-y-1">
         <Listbox
           value={selected}
           onChange={onChange}

@@ -123,84 +123,79 @@ const BucketAndFileCreator: React.FC<BucketAndFileCreatorProps> = () => {
   };
 
   return (
-    <div className="flex  ">
-      <h2></h2>
-      <div className="flex border-red-500 border rounded-xl p-10 gap-5">
-        <div className="flex flex-col gap-4">
-          <h2 className="text-red-500 uppercase  ">Create Bucket</h2>
-          {/* BUCKET CREATION FORM */}
-          <form
-            className="flex flex-col  justify-between flex-1"
-            onSubmit={onBucketSubmit}
-          >
-            <Input
-              value={bucketName}
-              placeholder="Name"
-              onChange={(event) => {
-                setBucketName(event.target.value);
-                validateBucketName(event.target.value);
-              }}
-              error={bucketError}
-            />
-            <Button
-              className=""
-              type="submit"
-              disabled={
-                !!bucketError || bucketName === "" || createBucketPending
-              }
-            >
-              {" "}
-              Add
-            </Button>
-          </form>
-        </div>
-        {/* FILE CREATION FORM */}
-
-        <form className="flex flex-col flex-1 gap-4" onSubmit={onFileSubmit}>
-          <h2 className="text-red-500 uppercase   ">Create File</h2>
-
-          <SingleListBox
-            // label="Bucket"
-            options={buckets}
-            selected={selectedBucket}
-            onChange={(bucket) => {
-              setSelectedBucket(bucket);
-            }}
-          />
-
+    <div className="flex border-red-500 border rounded-xl p-10 gap-5">
+      <div className="flex flex-col gap-4">
+        <h2 className="text-red-500 uppercase  ">Create Bucket</h2>
+        {/* BUCKET CREATION FORM */}
+        <form
+          className="flex flex-col  justify-between flex-1"
+          onSubmit={onBucketSubmit}
+        >
           <Input
-            value={fileName}
+            value={bucketName}
             placeholder="Name"
             onChange={(event) => {
-              setFileName(event.target.value);
-              validateFileName(event.target.value);
+              setBucketName(event.target.value);
+              validateBucketName(event.target.value);
             }}
-            error={fileError}
-          />
-          <Input
-            value={fileContent}
-            placeholder="Content"
-            onChange={(event) => {
-              setFileContent(event.target.value);
-              validateFileContent(event.target.value);
-            }}
-            error={fileContentError}
+            error={bucketError}
           />
           <Button
             className=""
             type="submit"
-            disabled={
-              !!fileContentError ||
-              !!fileError ||
-              fileName === "" ||
-              fileContent === "" ||
-              createFilePending
-            }
+            disabled={!!bucketError || bucketName === "" || createBucketPending}
           >
+            {" "}
             Add
           </Button>
         </form>
       </div>
+      {/* FILE CREATION FORM */}
+
+      <form className="flex flex-col flex-1 gap-4" onSubmit={onFileSubmit}>
+        <h2 className="text-red-500 uppercase   ">Create File</h2>
+
+        <SingleListBox
+          // label="Bucket"
+          options={buckets}
+          selected={selectedBucket}
+          onChange={(bucket) => {
+            setSelectedBucket(bucket);
+          }}
+        />
+
+        <Input
+          value={fileName}
+          placeholder="Name"
+          onChange={(event) => {
+            setFileName(event.target.value);
+            validateFileName(event.target.value);
+          }}
+          error={fileError}
+        />
+        <Input
+          value={fileContent}
+          placeholder="Content"
+          onChange={(event) => {
+            setFileContent(event.target.value);
+            validateFileContent(event.target.value);
+          }}
+          error={fileContentError}
+        />
+        <Button
+          className=""
+          type="submit"
+          disabled={
+            !!fileContentError ||
+            !!fileError ||
+            fileName === "" ||
+            fileContent === "" ||
+            createFilePending
+          }
+        >
+          Add
+        </Button>
+      </form>
     </div>
   );
 };
