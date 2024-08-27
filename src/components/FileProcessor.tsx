@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
+import { useBuckets, useFiles, useProcessFile } from "../hooks/fileQueries";
+import Button from "./atoms/Button";
+import Modal from "./atoms/Modal";
 import MultiListBox from "./atoms/MultiListBox";
 import SingleListBox from "./atoms/SingleListBox";
-import Button from "./atoms/Button";
-import CryptoJS from "crypto-js";
-import { fetchFile, useBuckets, useFiles } from "../hooks/fileQueries";
-import Modal from "./atoms/Modal";
 import Dashboard from "./Dashboard";
 
 type FileProcessorProps = {};
@@ -18,6 +17,9 @@ const FileProcessor: React.FC<FileProcessorProps> = () => {
   const { data: filesByBucket, isLoading: filesLoading } =
     useFiles(selectedBucket);
 
+  const { mutate: processFile, isPending: isProcessFilePending } =
+    useProcessFile();
+
   useEffect(() => {
     if (buckets && buckets.length > 0) {
       setSelectedBucket(buckets[0]);
@@ -30,28 +32,7 @@ const FileProcessor: React.FC<FileProcessorProps> = () => {
         selectedFiles.length === 0 ? filesByBucket : selectedFiles; // process all files if none are selected
       console.log("Processing files:", filesToProcess);
       filesToProcess.forEach(async (file: string) => {
-        const response = await fetchFile(selectedBucket, file);
-        console.log(response);
-        const content = response.content;
-        const hash = CryptoJS.SHA256(content).toString();
-
-        const classification = content.includes("virus")
-          ? "Malware"
-          : "Goodware";
-
-        const processingInfo = {
-          bucketName: selectedBucket,
-          fileName: file,
-          fileContentHash: hash,
-          processingTimestamp: new Date().toISOString(),
-          classification: classification,
-          fileSize: content.length,
-          fileType: "text/plain",
-        };
-        localStorage.setItem(
-          `processedFile-${selectedBucket}-${file}`,
-          JSON.stringify(processingInfo)
-        );
+        processFile({ bucket: selectedBucket, file });
       });
     }
   };

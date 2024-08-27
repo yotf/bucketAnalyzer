@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
+import CryptoJS from "crypto-js";
 
 import toast from "react-hot-toast";
 
@@ -34,6 +35,58 @@ export const fetchFile = async (bucketName: string, fileName: string) => {
   return response.data;
 };
 
+type ProcessFileParams = {
+  bucket: string;
+  file: string;
+};
+
+export const useProcessFile = () => {
+  return useMutation({
+    mutationFn: async ({ bucket, file }: ProcessFileParams) => {
+      const response = await fetchFile(bucket, file);
+
+      const fileContent = response.content;
+
+      // Calculate content hash (MD5 or SHA256)
+      const hash = CryptoJS.SHA256(fileContent).toString();
+
+      // Classify the file content
+      const classification = fileContent.includes("virus")
+        ? "Malware"
+        : "Goodware";
+
+      // Prepare the processing information
+      const processingInfo = {
+        bucketName: bucket,
+        fileName: file,
+        fileContentHash: hash,
+        processingTimestamp: new Date().toISOString(),
+        classification: classification,
+        fileSize: fileContent.length,
+        fileType: "text/plain", // Assuming all files are text files
+      };
+
+      // Store the processing information in local storage
+      localStorage.setItem(
+        `processedFile-${bucket}-${file}`,
+        JSON.stringify(processingInfo)
+      );
+
+      return processingInfo;
+    },
+
+    onError: (error: AxiosError<{ error: string }>) => {
+      if (error.response) {
+        toast.error(`Error processing file: ${error.response.data.error}`);
+      } else if (error.request) {
+        toast.error("Network error: Please check your connection.");
+      } else {
+        toast.error(`Error: ${error.message}`);
+      }
+    },
+  });
+};
+
 export const useCreateBucket = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -46,11 +99,9 @@ export const useCreateBucket = () => {
       toast.success("Bucket created successfully!");
       queryClient.invalidateQueries({ queryKey: ["buckets"] });
     },
-    onError: (error) => {
+    onError: (error: AxiosError<{ error: string }>) => {
       debugger;
-      toast.error(
-        `Error creating bucket: ${axios.isAxiosError(error) ? error?.response?.data?.error : error.message}`
-      );
+      toast.error(`Error creating bucket: ${error?.response?.data?.error}`);
     },
   });
 };
