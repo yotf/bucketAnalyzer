@@ -64,6 +64,11 @@ app.post("/buckets/:bucketName/files", async (c) => {
   }
 
   const filePath = path.join(bucketDir, fileName);
+
+  // Check if the file already exists
+  if (await fs.pathExists(filePath)) {
+    return c.json({ error: "File already exists" }, 409);
+  }
   await fs.writeFile(filePath, content);
   return c.json({ message: "File created successfully" });
 });

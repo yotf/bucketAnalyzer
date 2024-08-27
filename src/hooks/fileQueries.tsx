@@ -34,14 +34,6 @@ export const fetchFile = async (bucketName: string, fileName: string) => {
   return response.data;
 };
 
-// export const useFile = (bucketName: string, fileName: string) => {
-// return useQuery({
-//   queryKey: ["file", bucketName, fileName],
-//   queryFn: () => fetchFile(bucketName, fileName),
-//   enabled: !!bucketName && !!fileName,
-// });
-// };
-
 export const useCreateBucket = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -55,7 +47,10 @@ export const useCreateBucket = () => {
       queryClient.invalidateQueries({ queryKey: ["buckets"] });
     },
     onError: (error) => {
-      toast.error(`Error creating bucket: ${error.message}`);
+      debugger;
+      toast.error(
+        `Error creating bucket: ${axios.isAxiosError(error) ? error?.response?.data?.error : error.message}`
+      );
     },
   });
 };
@@ -82,7 +77,9 @@ export const useCreateFile = () => {
       });
     },
     onError: (error) => {
-      toast.error(`Error creating file: ${error.message}`);
+      toast.error(
+        `Error creating file: ${axios.isAxiosError(error) ? error?.response?.data?.error : error.message}`
+      );
     },
   });
 };
