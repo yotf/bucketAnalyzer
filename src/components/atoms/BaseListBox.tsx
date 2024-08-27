@@ -28,12 +28,14 @@ const BaseListBox: React.FC<ListBoxProps> = ({
           multiple={multiple}
           disabled={!options}
         >
-          <Label className="block text-sm font-medium ">{label}</Label>
+          {label && (
+            <Label className="block text-sm font-medium ">{label}</Label>
+          )}
           <div className="relative">
             <ListboxButton className=" bg-zinc-900  rounded cursor-pointer relative w-full font-semibold pl-3 pr-10 py-2 text-left  transition ease-in-out duration-150 sm:text-sm sm:leading-5">
               <span className="block truncate w-full">
                 {!multiple
-                  ? selected || `Choose ${label.toLowerCase()}`
+                  ? selected || `Choose ${label?.toLowerCase()}`
                   : selected?.length == 0
                     ? "All"
                     : `Choose ${label.toLowerCase()} (${selected.length})`}
