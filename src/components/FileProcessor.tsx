@@ -36,9 +36,7 @@ const FileProcessor: React.FC<FileProcessorProps> = () => {
 
   return (
     <div className=" flex flex-col items-start   ">
-      <h2 className="text-red-500 uppercase  -mb-[2px] ml-[6px] ">
-        Process Files
-      </h2>
+      <h2 className="text-red-500 uppercase  mb-2 ml-[6px] ">Process Files</h2>
 
       <div className=" p-10  border rounded-xl border-red-500 flex flex-col justify-end items-center  relative w-[477px]">
         <div className="flex gap-10 w-full ">
