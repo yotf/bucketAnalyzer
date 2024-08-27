@@ -1,7 +1,13 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Button from "./atoms/Button";
 import Input from "./atoms/Input";
 import { z } from "zod";
+import {
+  useBuckets,
+  useCreateBucket,
+  useCreateFile,
+} from "../hooks/fileQueries";
+import SingleListBox from "./atoms/SingleListBox";
 
 type BucketAndFileCreatorProps = {
   // Define the props for the component here
@@ -66,6 +72,20 @@ const BucketAndFileCreator: React.FC<BucketAndFileCreatorProps> = () => {
     undefined
   );
 
+  const [selectedBucket, setSelectedBucket] = useState<string>("");
+
+  const { data: buckets, isLoading: bucketsLoading } = useBuckets();
+
+  const { mutate: createBucket, isPending: createBucketPending } =
+    useCreateBucket();
+  const { mutate: createFile, isPending: createFilePending } = useCreateFile();
+
+  useEffect(() => {
+    if (buckets && buckets.length > 0) {
+      setSelectedBucket(buckets[0]);
+    }
+  }, [buckets]);
+
   const validateBucketName = (name: string) => {
     const result = bucketNameSchema.safeParse(name);
     setBucketError(
@@ -94,29 +114,13 @@ const BucketAndFileCreator: React.FC<BucketAndFileCreatorProps> = () => {
 
   const onBucketSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    createBucket({ bucketName });
   };
 
   const onFileSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-
-    // const fileNameResult = fileNameSchema.safeParse(fileName);
-    // if (!fileNameResult.success) {
-    //     setFileError(fileNameResult.error.errors[0].message);
-    //     return;
-    // }
-
-    // const fileContentResult = fileContentSchema.safeParse(fileContent);
-    // if (!fileContentResult.success) {
-    //     setFileContentError(fileContentResult.error.errors[0].message);
-    //     return;
-    // }
-
-    // console.log("File name and content are valid:", fileName, fileContent);
-    // setFileError(undefined);
-    // setFileContentError(undefined);
+    createFile({ bucketName: selectedBucket, fileName, content: fileContent });
   };
-  const disabledFile =
-    !!fileContentError || !!fileError || fileName === "" || fileContent === "";
 
   return (
     <div className="flex  ">
@@ -124,7 +128,7 @@ const BucketAndFileCreator: React.FC<BucketAndFileCreatorProps> = () => {
       <div className="flex border-red-500 border rounded-xl p-10 gap-5">
         <div className="flex flex-col gap-4">
           <h2 className="text-red-500 uppercase  ">Create Bucket</h2>
-
+          {/* BUCKET CREATION FORM */}
           <form
             className="flex flex-col  justify-between flex-1"
             onSubmit={onBucketSubmit}
@@ -141,16 +145,29 @@ const BucketAndFileCreator: React.FC<BucketAndFileCreatorProps> = () => {
             <Button
               className=""
               type="submit"
-              disabled={!!bucketError || bucketName === ""}
+              disabled={
+                !!bucketError || bucketName === "" || createBucketPending
+              }
             >
               {" "}
               Add
             </Button>
           </form>
         </div>
+        {/* FILE CREATION FORM */}
 
         <form className="flex flex-col flex-1 gap-4" onSubmit={onFileSubmit}>
           <h2 className="text-red-500 uppercase   ">Create File</h2>
+
+          <SingleListBox
+            // label="Bucket"
+            options={buckets}
+            selected={selectedBucket}
+            onChange={(bucket) => {
+              setSelectedBucket(bucket);
+            }}
+          />
+
           <Input
             value={fileName}
             placeholder="Name"
@@ -176,7 +193,8 @@ const BucketAndFileCreator: React.FC<BucketAndFileCreatorProps> = () => {
               !!fileContentError ||
               !!fileError ||
               fileName === "" ||
-              fileContent === ""
+              fileContent === "" ||
+              createFilePending
             }
           >
             Add
