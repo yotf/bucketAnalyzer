@@ -63,7 +63,9 @@ The frontend should be accessible on `http://localhost:5173`
 
 Once the application runs it should take you to the main and only page of the app, that has two sections:
 
+
 ### 1. File Processing
+![Screenshot 2024-08-28 133510](https://github.com/user-attachments/assets/80bb4345-64a1-498e-84ac-8ef564655ddd)
 
 This section is used for selecting which files from the selected bucket the user wants to process.
 If the user doesn't select any file from the bucket - all files will be processed.
